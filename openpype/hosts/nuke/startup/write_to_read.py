@@ -87,10 +87,28 @@ def create_read_node(ndata, comp_start):
     read = nuke.createNode('Read', 'file "' + ndata['filepath'] + '"')
     read.knob('colorspace').setValue(int(ndata['colorspace']))
     read.knob('raw').setValue(ndata['rawdata'])
-    read.knob('first').setValue(int(ndata['firstframe']))
-    read.knob('last').setValue(int(ndata['lastframe']))
-    read.knob('origfirst').setValue(int(ndata['firstframe']))
-    read.knob('origlast').setValue(int(ndata['lastframe']))
+
+    #MyEdit
+    if os.path.splitext(read.knob("file").value())[1] == ".mov":
+        
+        f = int(nuke.root().knob("first_frame").value()) - 1000
+        l = int(nuke.root().knob("last_frame").value()) - 1000
+
+        read.knob('first').setValue(f)
+        read.knob('last').setValue(l)
+        read.knob('origfirst').setValue(f)
+        read.knob('origlast').setValue(l)
+        read.knob("frame_mode").setValue("start at")
+        read.knob("frame").setValue("1001")
+
+    else:
+
+        read.knob('first').setValue(int(ndata['firstframe']))
+        read.knob('last').setValue(int(ndata['lastframe']))
+        read.knob('origfirst').setValue(int(ndata['firstframe']))
+        read.knob('origlast').setValue(int(ndata['lastframe']))
+
+
     if comp_start == int(ndata['firstframe']):
         read.knob('frame_mode').setValue("1")
         read.knob('frame').setValue(str(comp_start))
