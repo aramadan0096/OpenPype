@@ -849,13 +849,28 @@ class ExporterReviewMov(ExporterReview):
         # ---------- start nodes creation
 
         # Read node
-        r_node = nuke.createNode("Read")
-        r_node["file"].setValue(self.path_in)
-        r_node["first"].setValue(self.first_frame)
-        r_node["origfirst"].setValue(self.first_frame)
-        r_node["last"].setValue(self.last_frame)
-        r_node["origlast"].setValue(self.last_frame)
-        r_node["colorspace"].setValue(self.write_colorspace)
+
+        if os.path.splitext(self.path_in)[1] == ".mov":
+
+            r_node = nuke.createNode("Read")
+            r_node["file"].setValue(self.path_in)
+            r_node["first"].setValue(self.first_frame-1000)
+            r_node["origfirst"].setValue(self.first_frame-1000)
+            r_node["last"].setValue(self.last_frame-1000)
+            r_node["origlast"].setValue(self.last_frame-1000)
+            r_node["frame_mode"].setValue("start at")
+            r_node["frame"].setValue("1001")
+            r_node["colorspace"].setValue(self.write_colorspace)
+
+        else:
+            
+            r_node = nuke.createNode("Read")
+            r_node["file"].setValue(self.path_in)
+            r_node["first"].setValue(self.first_frame)
+            r_node["origfirst"].setValue(self.first_frame)
+            r_node["last"].setValue(self.last_frame)
+            r_node["origlast"].setValue(self.last_frame)
+            r_node["colorspace"].setValue(self.write_colorspace)   
 
         if read_raw:
             r_node["raw"].setValue(1)
